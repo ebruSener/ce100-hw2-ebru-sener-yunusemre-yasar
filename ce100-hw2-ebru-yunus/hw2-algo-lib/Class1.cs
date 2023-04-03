@@ -40,46 +40,37 @@ namespace hw2_algo_lib
 
 
 
-        public static (int, int[]) MatrixChainOrder(int[] p)
-        {
-            int n = p.Length - 1;
-            int[,] m = new int[n, n];
-            int[,] s = new int[n, n];
 
-            for (int l = 2; l <= n; l++)
+        public static int MatrixChainOrder(int[] p, int i, int j)
+        {
+            // Matrix Ai has dimension p[i - 1] x p[i]
+            // for i = 1..n
+            if (i == j)
+                return 0;
+
+            int min = int.MaxValue;
+
+            // place parenthesis at different places
+            // between first and last matrix, recursively
+            // calculate count of multiplications for each
+            // parenthesis placement and return the
+            // minimum count
+            for (int k = i; k < j; k++)
             {
-                for (int i = 0; i < n - l + 1; i++)
-                {
-                    int j = i + l - 1;
-                    m[i, j] = int.MaxValue;
-                    for (int k = i; k < j; k++)
-                    {
-                        int q = m[i, k] + m[k + 1, j] + p[i] * p[k + 1] * p[j + 1];
-                        if (q < m[i, j])
-                        {
-                            m[i, j] = q;
-                            s[i, j] = k;
-                        }
-                    }
-                }
+                int count = MatrixChainOrder(p, i, k)
+                            + MatrixChainOrder(p, k + 1, j)
+                            + p[i - 1] * p[k] * p[j];
+
+                if (count < min)
+                    min = count;
             }
 
-            int[] order = new int[n - 1];
-            BuildOptimalOrder(s, 0, n - 2, order);
-
-            return (m[0, n - 1], order);
-        }
-
-        private static void BuildOptimalOrder(int[,] s, int i, int j, int[] order)
-        {
-            if (i == j) return;
-            int k = s[i, j];
-            BuildOptimalOrder(s, i, k, order);
-            BuildOptimalOrder(s, k + 1, j, order);
-            order[k] = i;
+            // Return minimum count
+            return min;
         }
 
 
+       
 
 
 
@@ -145,70 +136,144 @@ namespace hw2_algo_lib
         }
 
 
-        public static int LongestCommonSubsequence(string A, string B)
+
+        public static string LongestCommonSubsquence(string R, string S, int a, int e)
         {
-            int m = A.Length;
-            int n = B.Length;
-            int[,] dp = new int[m + 1, n + 1];
+            // Returns length of LCS for X[0..m-1], Y[0..n-1]
+            int[,] L = new int[a + 1, e + 1];
 
-            for (int i = 1; i <= m; i++)
+            // Following steps build L[m+1][n+1] in
+            // bottom up fashion. Note that L[i][j]
+            // contains length of LCS of X[0..i-1]
+            // and Y[0..j-1]
+            for (int i = 0; i <= a; i++)
             {
-                for (int j = 1; j <= n; j++)
+                for (int j = 0; j <= e; j++)
                 {
-                    if (A[i - 1] == B[j - 1])
-                        dp[i, j] = dp[i - 1, j - 1] + 1;
-                    else
-                        dp[i, j] = Math.Max(dp[i - 1, j], dp[i, j - 1]);
-                }
-            }
-
-            return dp[m, n];
-        }
-
-
-
-
-
-        class Knapsack
-        {
-            static int MaxValue(int[] values, int[] weights, int capacity, int n)
-            {
-                int[,] dp = new int[n + 1, capacity + 1];
-
-                for (int i = 0; i <= n; i++)
-                {
-                    for (int j = 0; j <= capacity; j++)
+                    if (i == 0 || j == 0)
                     {
-                        if (i == 0 || j == 0)
-                        {
-                            dp[i, j] = 0;
-                        }
-                        else if (weights[i - 1] <= j)
-                        {
-                            dp[i, j] = Math.Max(values[i - 1] + dp[i - 1, j - weights[i - 1]], dp[i - 1, j]);
-                        }
-                        else
-                        {
-                            dp[i, j] = dp[i - 1, j];
-                        }
+                        L[i, j] = 0;
+                    }
+                    else if (R[i - 1] == S[j - 1])
+                    {
+                        L[i, j] = L[i - 1, j - 1] + 1;
+                    }
+                    else
+                    {
+                        L[i, j] = Math.Max(L[i - 1, j], L[i, j - 1]);
                     }
                 }
-
-                return dp[n, capacity];
             }
 
-            static void Main()
+            // Following code is used to print LCS
+            int index = L[a, e];
+
+
+            // Create a character array
+            // to store the lcs string
+            string lcs = string.Empty;
+
+
+
+            // Start from the right-most-bottom-most corner
+            // and one by one store characters in lcs[]
+            int k = a, l = e;
+            while (k > 0 && l > 0)
             {
-                int[] values = { 60, 100, 120 };
-                int[] weights = { 10, 20, 30 };
-                int capacity = 50;
-                int n = values.Length;
-                int maxVal = MaxValue(values, weights, capacity, n);
-                Console.WriteLine("Maximum value that can be obtained is: " + maxVal);
+                // If current character in X[] and Y
+                // are same, then current character
+                // is part of LCS
+                if (R[k - 1] == S[l - 1])
+                {
+                    // Put current character in result
+                    lcs = R[k - 1] + lcs;
+
+                    // reduce values of i, j and index
+                    k--;
+                    l--;
+                    index--;
+                }
+
+                // If not same, then find the larger of two and
+                // go in the direction of larger value
+                else if (L[k - 1, l] > L[k, l - 1])
+                { k--; }
+                else
+                { l--; }
             }
+            return lcs;
         }
 
 
-    }
-}
 
+
+
+
+
+        public class Knapsack_Problem
+        {
+            // A utility function that returns
+            // maximum of two integers
+            public static int max(int a, int b)
+            {
+                return (a > b) ? a : b;
+            }
+
+
+            /**
+            *
+            *	  @name   knapSack (Knapsack Function)
+            *
+            *	  @brief Knapsack Function
+            *
+            *	  Knapsack Function
+            *
+            *	  @param  [in] W [\b int]  W
+            *	  
+            *	  @param  [in] wt [\b int]  wt
+            *	  
+            *	  @param  [in] val [\b int]  val
+            *	  
+            *	  @param  [in] n [\b int]  n
+            *	  
+            *	  
+            **/
+
+
+            public static int knapSack(int W, int[] wt, int[] val, int n)
+            {
+
+                // Base Case
+                if (n == 0 || W == 0)
+                    return 0;
+
+                // If weight of the nth item is
+                // more than Knapsack capacity W,
+                // then this item cannot be
+                // included in the optimal solution
+                if (wt[n - 1] > W)
+                    return knapSack(W, wt,
+                                    val, n - 1);
+
+                // Return the maximum of two cases:
+                // (1) nth item included
+                // (2) not included
+                else
+                    return max(val[n - 1]
+                               + knapSack(W - wt[n - 1], wt,
+                                          val, n - 1),
+                               knapSack(W, wt, val, n - 1));
+            }
+
+
+
+
+
+
+
+
+       
+        }
+    }
+
+}
