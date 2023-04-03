@@ -11,19 +11,37 @@ namespace hw2_algo_test
     public class HeapSortTests
     {
         [TestMethod]
-        public void HeapSort_SortsIntArrayInAscendingOrder()
+        public void HeapSoTest1()
         {
-            // Arrange
-            int[] unsortedArray = { 5, 2, 9, 3, 1, 7, 8, 6, 4 };
-            int[] expectedArray = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            int[] array = new int[] { 104, 98, 15, 49, 20 };
+            int n = array.Length;
+            int[] expected = new int[] { 15, 20, 49, 98, 104 };
 
-            // Act
-            
-            Class1.HeapSort(unsortedArray);
-
-            // Assert
-            Assert.AreEqual(expectedArray, unsortedArray);
+            Class1.heapSort(array, n);
+            CollectionAssert.AreEqual(expected, array);
         }
-    }
 
+        [TestMethod]
+        public void HeapSoTest2()
+        {
+            int[] array = new int[] { 104, 98, 15, 49, 20 };
+            int n = array.Length;
+            int[] expected = new int[] { 15, 20, 49, 98, 104 };
+
+            Class1.heapSort(array, n);
+            CollectionAssert.AreEqual(expected, array);
+        }
+
+        [TestMethod]
+        public void HeapSoTest3()
+        {
+            int[] array = new int[] { 348, 546, 781, 233, 460, 904 };
+            int n = array.Length;
+            int[] expected = new int[] { 233, 348, 460, 546, 781, 904 };
+
+            Class1.heapSort(array, n);
+            CollectionAssert.AreEqual(expected, array);
+        }
+
+    }
 }

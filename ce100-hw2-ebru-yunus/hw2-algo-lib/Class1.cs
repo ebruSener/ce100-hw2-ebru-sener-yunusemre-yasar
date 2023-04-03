@@ -8,54 +8,33 @@ namespace hw2_algo_lib
 {
     public class Class1
     {
-        public static void HeapSort(int[] array)
+        public static void heapSort(int[] arr, int n)
         {
-            // Build heap (rearrange array)
-            for (int i = array.Length / 2 - 1; i >= 0; i--)
+            for (int i = n / 2 - 1; i >= 0; i--)
+                heapify(arr, n, i);
+            for (int i = n - 1; i >= 0; i--)
             {
-                Heapify(array, array.Length, i);
-            }
-
-            // One by one extract an element from heap
-            for (int i = array.Length - 1; i >= 0; i--)
-            {
-                // Move current root to end
-                int temp = array[0];
-                array[0] = array[i];
-                array[i] = temp;
-
-                // call max heapify on the reduced heap
-                Heapify(array, i, 0);
+                int temp = arr[0];
+                arr[0] = arr[i];
+                arr[i] = temp;
+                heapify(arr, i, 0);
             }
         }
-
-        private static void Heapify(int[] array, int size, int index)
+        static void heapify(int[] arr, int n, int i)
         {
-            int largest = index;  // Initialize largest as root
-            int left = 2 * index + 1;  // left = 2*i + 1
-            int right = 2 * index + 2;  // right = 2*i + 2
-
-            // If left child is larger than root
-            if (left < size && array[left] > array[largest])
-            {
+            int largest = i;
+            int left = 2 * i + 1;
+            int right = 2 * i + 2;
+            if (left < n && arr[left] > arr[largest])
                 largest = left;
-            }
-
-            // If right child is larger than largest so far
-            if (right < size && array[right] > array[largest])
-            {
+            if (right < n && arr[right] > arr[largest])
                 largest = right;
-            }
-
-            // If largest is not root
-            if (largest != index)
+            if (largest != i)
             {
-                int swap = array[index];
-                array[index] = array[largest];
-                array[largest] = swap;
-
-                // Recursively heapify the affected sub-tree
-                Heapify(array, size, largest);
+                int swap = arr[i];
+                arr[i] = arr[largest];
+                arr[largest] = swap;
+                heapify(arr, n, largest);
             }
         }
 
