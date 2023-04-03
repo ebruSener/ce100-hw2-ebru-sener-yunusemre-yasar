@@ -1,28 +1,29 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using hw2_algo_lib;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
 
 namespace hw2_algo_test
 {
+
+
     [TestClass]
-    public class UnitTest1
+    public class HeapSortTests
     {
         [TestMethod]
-        public void TestHeapSort_BestCase_1000Inputs()
+        public void HeapSort_SortsIntArrayInAscendingOrder()
         {
             // Arrange
-            int[] arr = Enumerable.Range(1, 1000).ToArray();
+            int[] unsortedArray = { 5, 2, 9, 3, 1, 7, 8, 6, 4 };
+            int[] expectedArray = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
             // Act
-            int[] sortedArr = HeapSort(arr);
+            
+            Class1.HeapSort(unsortedArray);
 
             // Assert
-            CollectionAssert.AreEqual(arr, sortedArr);
-        }
-
-        private int[] HeapSort(int[] arr)
-        {
-            throw new NotImplementedException();
+            Assert.AreEqual(expectedArray, unsortedArray);
         }
     }
+
 }
